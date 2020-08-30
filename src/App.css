@@ -1,0 +1,52 @@
+.App {
+  text-align: center;
+}
+.pic{
+  width:200px;
+  height:40px;
+}
+.btn{
+  width:150px;
+  height:40px;
+  margin-bottom:20px;
+  background-color:rgb(163, 90, 90);
+  border:1px solid black;
+  color:white;
+}
+.question-container{
+  margin-bottom:30px;
+}
+
+.survey-container{
+  margin-top:30px;
+ align-items: center;
+ display:flex;
+ flex-direction:column;
+
+}
+.btn-hide{
+  display: none;
+}
+.question-box{
+  width:400px;
+  height:30px;
+  font-weight: 600;
+}
+.survey-container1{
+  width:400px;
+  padding:5px;
+}
+.answer{
+  width:425px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.answer input{
+  width:350px;
+  padding:5px;
+  height:20px;
+}
+.answer p{
+  cursor:pointer;
+}
