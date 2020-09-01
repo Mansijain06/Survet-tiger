@@ -22,6 +22,23 @@
  align-items: center;
  display:flex;
  flex-direction:column;
+}
+.text{
+  width:200px;
+  height:30px auto;
+  font-weight: 600;
+  margin-top:20px;
+  color:black;
+  word-break: break-all;
+}
+li{
+  list-style-type:none;
+}
+.text-center{
+  align-items: center;
+  display:flex;
+  flex-direction:column;
+  text-align:center;
 
 }
 .btn-hide{
@@ -49,4 +66,14 @@
 }
 .answer p{
   cursor:pointer;
+}
+.block-head{
+  align-items: center;
+  display:flex;
+  flex-direction:column;
+}
+.block{
+  border:1px solid black;
+  width:350px;
+  height:400px auto;
 }

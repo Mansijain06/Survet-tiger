@@ -1,55 +1,72 @@
 import React, { useState, Fragment } from 'react';
-import Publish from './Publish';
-import { Link } from 'react-router-dom';
+import { Link,Redirect } from 'react-router-dom';
+
 const CreatePage = () => {
     let [surveyType, setSurveyType] = useState('type');
-    let [options, setOptions] = useState([{ value: 'romil', id: Date.now() }]);
     let [buttons, setButtons] = useState(0);
+    let [text, setText] = useState('');
+    const [repeatText, setRepeatText] = useState([""]);
+    const [redirect, setRedirect]=useState(false);
 
-    const text = (e) => {
-        setOptions([{ value: e }]);
-    };
-
-    const repeat = () => {
-        if (options.length != 4) {
-            setOptions([...options, { value: '', id: Date.now() }]);
-        }
-        if (options.length < 4) {
-            setButtons(0);
+    const repeatMultipleQ = () => {
+        if (repeatText.length < 4) {
+            setRepeatText((oldData) => {
+                return [...oldData, ''];
+            });
         }
         else {
             setButtons(1);
         }
     };
-    const repeatSingle = () => {
-        if (options.length != 2) {
-            setOptions([...options, { value: '', id: Date.now() }]);
-        }
-        if (options.length < 2) {
-            setButtons(0);
+    const repeatSingleQ = () => {
+        if (repeatText.length < 2) {
+            setRepeatText((oldData) => {
+                return [...oldData, ''];
+            });
         }
         else {
             setButtons(1);
         }
     };
     const DeleteList = (e) => {
-        let index = options.indexOf(e);
-        let newOptions = [...options];
-        let newArray = newOptions.splice(index, 1);
-        setOptions(newOptions);
+        setRepeatText((oldData) => {
+            return oldData.filter((currentEle, index) => {
+                return index !== e;
+            })
+        });
+    };
 
-        if (options.length < 5) {
+    const checkForTwoText = () => {
+        if (repeatText.length > 2) {
+            repeatText.pop();
+            repeatText.pop();
             setButtons(0);
         }
     };
-    const checkForTwoText = () => {
-        if (options.length > 2) {
-            DeleteList(options.pop);
-            DeleteList(options.pop);
-        }
+    const itemChange = (e) => {
+        console.log("baby", e.target.value);
+        setText(e.target.value);
+        let val = e.target.value;
+        let len = repeatText.length;
+        repeatText[len - 1] = val;
+    };
+    const redirectToPage=()=>{
+        setRedirect(true);
+    };
+    const renderRedirect=()=>{
+       if(redirect==true){
+          return(<Redirect
+            to={{
+            pathname: "/publish",
+            state: { repeatText: repeatText}
+          }}
+        />
+          );
+       }
     };
     return (
         <Fragment>
+                {renderRedirect()}
             <div>
                 <select exact value={surveyType} onChange={(evt) => { setSurveyType(evt.target.value) }}>
                     <option value="type">select queston type</option>
@@ -57,45 +74,50 @@ const CreatePage = () => {
                     <option value="multiple">Multiple question</option>
                 </select>
             </div>
+
             {surveyType == 'single' ? <>
+                {checkForTwoText()}
                 <div className="survey-container">
                     <div className="survey-container1">
                         <input value="Which of the following apps you have on your phone?" className="question-box" />
                         <p>Options</p>
-                        {checkForTwoText()}
-                        {options.map(option => (
-                            <div className="answer">
-                                <input type="text" placeholder="Type answer here" />
-                                <p onClick={repeatSingle}>➕</p>
-                                <p onClick={() => { DeleteList(option) }}>➖</p>
-                            </div>
+                        {repeatText.map((option, id) => (
+                            <a key={id}>
+                                <div className="answer">
+                                    <input type="text" placeholder="Type answer here" value={option} onChange={itemChange} />
+                                    <p onClick={repeatSingleQ}  >➕</p>
+                                    <p onClick={() => {
+                                        DeleteList(id);
+                                    }}>➖</p>
+                                </div>
+                            </a>
                         ))}
                     </div>
                 </div>
             </> : null}
 
             {surveyType == 'multiple' ? <>
+
                 <div className="survey-container">
                     <div className="survey-container1">
                         <input value="Which of the following apps you have on your phone?" className="question-box" />
                         <p>Options</p>
-                        {options.map(option => (
-                            <div className="answer">
-                                <input type="text" placeholder="Type answer here" value={option.value} onChange={(e) => {
-                                    text(e.target.value);
-                                }} />
-                                <p onClick={repeat}>➕</p>
-                                <p onClick={() => { DeleteList(option) }}>➖</p>
-                            </div>
+                        {repeatText.map((option, id) => (
+                            <a key={id}>
+                                <div className="answer">
+                                    <input type="text" placeholder="Type answer here" value={option} onChange={itemChange} />
+                                    <p onClick={repeatMultipleQ}  >➕</p>
+                                    <p onClick={() => {
+                                        DeleteList(id);
+                                    }}>➖</p>
+                                </div>
+                            </a>
                         ))}
                     </div>
                 </div>
             </> : null}
             {buttons === 1 ? (<>
-
-                <Publish options={options}>Button
-                </Publish>
-          
+                <button onClick={redirectToPage}>publish</button>
             </>) : null}
         </Fragment>
     );
